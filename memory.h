@@ -10,18 +10,24 @@
 #include "object.h"
 
 
+#define ALLOCATE(type, count) \
+    (type*)reallocate(NULL, 0, sizeof(type) * (count))
+
+#define FREE(type, pointer) reallocate(pointer, sizeof(type), 0)
+
+#define GROW_CAPACITY(capacity) \
+    ((capacity) < 8 ? 8 : (capacity) * 2)
+
+#define GROW_ARRAY(type, pointer, oldCount, newCount) \
+    (type*)reallocate(pointer, sizeof(type) * (oldCount), \
+        sizeof(type) * (newCount))
+
+#define FREE_ARRAY(type, pointer, oldCount) \
+    reallocate(pointer, sizeof(type) * (oldCount), 0)
+
 void* reallocate(void* pointer, size_t oldSize, size_t newSize);
-//< grow-array
-//> Garbage Collection mark-object-h
 void markObject(Obj* object);
-//< Garbage Collection mark-object-h
-//> Garbage Collection mark-value-h
 void markValue(Value value);
-//< Garbage Collection mark-value-h
-//> Garbage Collection collect-garbage-h
 void collectGarbage();
-//< Garbage Collection collect-garbage-h
-//> Strings free-objects-h
 void freeObjects();
-//< Strings free-objects-h
 #endif //ASSEMBLY_DO_MEMORY_H
