@@ -63,7 +63,8 @@ typedef uint64_t value;
 
 static inline double valueToNum(Value value) {
     double num;
-    memcpy(&num, &value, sizeof(Value));
+    memcpy(&num, &value, sizeof(Val
+    ue));
     return num;
 }
 

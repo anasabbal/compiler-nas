@@ -44,3 +44,34 @@ static Entry* findEntry(Entry* entries, int capacity,ObjString* key) {
         }
     }
 }
+bool tableGet(Table *table, ObjString* key, Value* value){
+    if (table->count == 0) return false;
+
+    Entry* entry = findEntry(table->entries, table->capacity, key);
+    if (entry->key == NULL) return false;
+
+    *value = entry->value;
+    return true;
+}
+static void adjustCapacity(Table* table, int capacity) {
+    Entry* entries = ALLOCATE(Entry, capacity);
+    for (int i = 0; i < capacity; i++) {
+        entries[i].key = NULL;
+        entries[i].value = NIL_VAL;
+    }
+
+    table->count = 0;
+    for (int i = 0; i < table->capacity; i++) {
+        Entry* entry = &table->entries[i];
+        if (entry->key == NULL) continue;
+
+        Entry* dest = findEntry(entries, capacity, entry->key);
+        dest->key = entry->key;
+        dest->value = entry->value;
+        table->count++;
+
+    }
+    FREE_ARRAY(Entry, table->entries, table->capacity);
+    table->entries = entries;
+    table->capacity = capacity;
+}
